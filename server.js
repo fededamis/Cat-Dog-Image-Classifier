@@ -22,6 +22,7 @@ var model = null;
 (async () => { 
     var modelPath = tf.io.fileSystem("./public/graph_model/model.json");   
     model = await tf.loadGraphModel(modelPath);
+    console.log("Se cargaron los modelos.");
 })();    
     
 const extendedPromisify = (fn) => {
@@ -55,6 +56,7 @@ server.get("/", (req, res) => {
 
 server.post("/predict", async (request, response) => {  
     
+    console.log("Inicio request");
     var imgBase64 = request.body.image;   
     var imgBuffer = Buffer.from(imgBase64, 'base64');
     imgBuffer = await sharp(imgBuffer).toFormat('jpg').toBuffer();          
@@ -62,6 +64,7 @@ server.post("/predict", async (request, response) => {
 
     //Al setear un startScope y un endScope todos los tensores se liberan de memoria 
     //al finalizar el bloque entre start-endScope
+    console.log("Inicio Tensorflow");
     tf.engine().startScope();  
   
     //Preprocessing antes de ingresar input al modelo
@@ -76,6 +79,7 @@ server.post("/predict", async (request, response) => {
     
     imgTensor = imgTensor.expandDims();         
 
+    console.log("Obteniendo predicción");
     var prediction = await model.predict(imgTensor).data();
     var predictedValue = prediction[0].toString();
     console.log("PredictedValue: " + predictedValue);
@@ -89,6 +93,7 @@ server.post("/predict", async (request, response) => {
   
     tf.engine().endScope();
 
+    console.log("Fin request");
     response.json({"predictedValue": predictedValue});
    
 });

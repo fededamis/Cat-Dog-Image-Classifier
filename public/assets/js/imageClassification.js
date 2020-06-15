@@ -70,7 +70,7 @@ function processImage() {
     var dataUrl = $("#previewHolder").attr('src');
     dataUrlArray = dataUrl.split(',');
     var base64Img = dataUrlArray[1];    
-    var predictImgUrl = "http://127.0.0.1:3000/predict";
+    var predictImgUrl = "/predict"; 
 
     var body = {};
     body.image = base64Img;           
