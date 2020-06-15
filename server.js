@@ -6,16 +6,23 @@ const { promisify } = require('util');
 const fs = require('fs');
 const sharp = require("sharp"); 
 const cors = require('cors');
+const path = require('path');
 
 sharp.cache(false);
-
-server.use(cors({origin: 'null'}));
+server.use(cors());
 
 // Make all the files in 'public' available
-server.use(express.static("/public"));   
+server.use(express.static(path.join(__dirname, 'public')));
+// Parse URL-encoded bodies (as sent by HTML forms)
+server.use(express.urlencoded({limit: '5mb'}));
+// Parse JSON bodies (as sent by API clients)
+server.use(express.json({limit: '5mb'}));
  
 var model = null; 
-(async () => { model = await tf.loadGraphModel("file://public/graph_model/model.json");})()    
+(async () => { 
+    var modelPath = tf.io.fileSystem("./public/graph_model/model.json");   
+    model = await tf.loadGraphModel(modelPath);
+})();    
     
 const extendedPromisify = (fn) => {
     return (...args) => {
@@ -42,24 +49,15 @@ async function downloadImage (url, path) {
     });
 }
 
-// Parse URL-encoded bodies (as sent by HTML forms)
-server.use(express.urlencoded());
-// Parse JSON bodies (as sent by API clients)
-server.use(express.json());
-
-server.get("/", (req, res) => {
-    res.json({ message: "AI Image Classiffier API" });
+server.get("/", (req, res) => {   
+    res.sendFile(__dirname  + '/public/index.html');
  });
 
-server.post("/predict", async (request, response) => {
-  
-    var imgUrl = request.body.image;
-    console.log("ImgUrl:" + imgUrl);
-        
-    //Almaceno la imagen a jpg para luego convertirla en array
-    var tempImgPath = 'public/imgTemp.jpg';
-    await downloadImage(imgUrl, tempImgPath); 
-    var imgBuffer = await sharp(tempImgPath).toFormat('jpg').toBuffer();            
+server.post("/predict", async (request, response) => {  
+    
+    var imgBase64 = request.body.image;   
+    var imgBuffer = Buffer.from(imgBase64, 'base64');
+    imgBuffer = await sharp(imgBuffer).toFormat('jpg').toBuffer();          
     var imgArray =  new Uint8Array(imgBuffer);
 
     //Al setear un startScope y un endScope todos los tensores se liberan de memoria 
@@ -69,7 +67,7 @@ server.post("/predict", async (request, response) => {
     //Preprocessing antes de ingresar input al modelo
     var imgTensor = tf.node.decodeJpeg(imgArray)
         .resizeNearestNeighbor([224, 224])
-        .toFloat()
+        .toFloat();
 
     //Normalizo valores entre 0 y 1
     var inputMin = imgTensor.min();
@@ -82,8 +80,7 @@ server.post("/predict", async (request, response) => {
     var predictedValue = prediction[0].toString();
     console.log("PredictedValue: " + predictedValue);
   
-    //Limpio variables
-    fs.unlinkSync(tempImgPath);
+    //Limpio variables    
     imgBuffer = null;
     imgArray = null;
     tf.dispose(imgTensor);
@@ -96,6 +93,8 @@ server.post("/predict", async (request, response) => {
    
 });
 
-const listener = server.listen(process.env.PORT, () => {
-    console.log("Server listening at port " + process.env.PORT);
+var port = process.env.PORT || 3000;
+
+const listener = server.listen(port, () => {
+    console.log("Server listening at port " + port);
 });      

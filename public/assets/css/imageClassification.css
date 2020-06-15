@@ -1,0 +1,50 @@
+
+#menuNav {
+    display: none;
+}
+
+input[type="file"] {
+    border: 0;
+    clip: rect(0, 0, 0, 0);
+    height: 1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute !important;
+    white-space: nowrap;
+    width: 1px;
+    display: block;
+}
+
+#errorMsgFileInput {
+    color: red;
+    display: none;
+}
+
+#previewHolder {
+    display: block;
+    margin-bottom: 1em;
+}
+
+#processImage {
+    display: block;
+    width: fit-content;
+    margin-bottom: 1em;
+}
+
+#loadingDiv {
+    display: inline-flex;
+    vertical-align:middle;
+}
+
+#loading {
+    height: 2em;
+    width: 2em;
+    margin-right: 1em;
+    display: none;
+}
+
+#loadingText {    
+    display: none;
+}
+
+  
