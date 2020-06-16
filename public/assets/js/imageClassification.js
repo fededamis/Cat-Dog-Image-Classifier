@@ -110,7 +110,7 @@ function processImage() {
             }           
         },
         error: function (error) {
-            $('#loadingText').text("Hubo un error al intentar subir la imagen, por favor pruebe nuevamente.");
+            $('#loadingText').text("Hubo un error al intentar procesar la imagen, por favor pruebe nuevamente.");
             $('#loading').css('display', 'none');    
         }
     });
