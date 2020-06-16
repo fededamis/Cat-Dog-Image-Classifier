@@ -57,9 +57,11 @@
 								es bastante trivial, este mismo concepto se puede extender para la clasificación de imágenes según N etiquetas predefinidas. Por citar 
 								un caso práctico, en el <a href="assets/pdf/test_study_dnn.pdf">siguiente paper</a> se detalla un método de diagnóstico automatizado de COVID-19 
 								alimentando a un algoritmo de este estilo con imágenes de rx de tórax. <br><br>
-								Para el modelo de predicción se aplicó Transfer Learning sobre un modelo NasNet Mobile, entrenado mediante Cloud CPU en Google Colab. El backend
-								está desarrollado en Node.js y se utilizó la librería de AI Tensorflow. El código completo se puede encontrar 
-								<a href="https://github.com/fededamis/Cat-Dog-Image-Classifier">aquí</a>.
+								Para el modelo de predicción se aplicó Transfer Learning sobre un modelo NasNet Mobile, entrenado mediante Cloud CPU en Google Colab. 
+								Se aplicaron técnicas como Data Augmentation, Early Stopping, Model Checkpoint y Learning Rate Scheduler. El valor de precisión obtenido fue de 0,9825.								
+								Se puede ver el archivo de Jupyter Notebook <a href="https://github.com/fededamis/Cat-Dog-Image-Classifier/blob/master/public/jupyter_notebook/Cat_Dog_Classifier_DNN.ipynb">aquí</a>.								
+								El backend está desarrollado en Node.js y se utilizó la librería de AI Tensorflow. El código completo se puede encontrar 
+								<a href="https://github.com/fededamis/Cat-Dog-Image-Classifier">aquí</a>. 
 							</p>
 
 							<input id="file-input" type="file" />
